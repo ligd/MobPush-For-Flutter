@@ -15,7 +15,6 @@ import 'notify_page.dart';
 import 'other_api_page.dart';
 import 'timing_notify_page.dart';
 
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -49,49 +48,51 @@ class _MainAppState extends State<MainApp> {
       MobpushPlugin.setAPNsForProduction(false);
     }
     MobpushPlugin.addPushReceiver(_onEvent, _onError);
-    
+
     //上传隐私协议许可
     MobpushPlugin.updatePrivacyPermissionStatus(true);
   }
 
-  void _onEvent(Object event) {
+  void _onEvent(dynamic event) {
     print('>>>>>>>>>>>>>>>>>>>>>>>>>>>onEvent:' + event.toString());
     setState(() {
-      Map<String, dynamic> eventMap = json.decode(event);
+      Map<String, dynamic> eventMap = json.decode(event as String);
       Map<String, dynamic> result = eventMap['result'];
       int action = eventMap['action'];
 
       switch (action) {
         case 0:
           MobPushCustomMessage message =
-          new MobPushCustomMessage.fromJson(result);
+              new MobPushCustomMessage.fromJson(result);
           showDialog(
               context: context,
-              child: AlertDialog(
-                content: Text(message.content),
-                actions: <Widget>[
-                  FlatButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text("确定"),
-                  )
-                ],
-              ));
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  content: Text(message.content),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Text("确定"),
+                    )
+                  ],
+                );
+              });
           break;
         case 1:
           MobPushNotifyMessage message =
-          new MobPushNotifyMessage.fromJson(result);
+              new MobPushNotifyMessage.fromJson(result);
           break;
         case 2:
           MobPushNotifyMessage message =
-          new MobPushNotifyMessage.fromJson(result);
+              new MobPushNotifyMessage.fromJson(result);
           break;
       }
     });
   }
 
-  void _onError(Object event) {
+  void _onError(dynamic event) {
     setState(() {
       print('>>>>>>>>>>>>>>>>>>>>>>>>>>>onError:' + event.toString());
     });
@@ -99,52 +100,42 @@ class _MainAppState extends State<MainApp> {
 
   void _onAppNotifyPageTap() {
     setState(() {
-      Navigator.push(
-        context,
-        new MaterialPageRoute(builder: (context) => new AppNotifyPage())
-      );
+      Navigator.push(context,
+          new MaterialPageRoute(builder: (context) => new AppNotifyPage()));
     });
   }
 
   void _onNotifyPageTap() {
     setState(() {
-      Navigator.push(
-        context, 
-        new MaterialPageRoute(builder: (context) => new NotifyPage())
-      );
+      Navigator.push(context,
+          new MaterialPageRoute(builder: (context) => new NotifyPage()));
     });
   }
 
   void _onTimingNotifyPageTap() {
     setState(() {
-      Navigator.push(
-        context, new MaterialPageRoute(builder: (context) => new TimingNotifyPage())
-      );
+      Navigator.push(context,
+          new MaterialPageRoute(builder: (context) => new TimingNotifyPage()));
     });
   }
 
   void _onLocalNotifyPageTap() {
     setState(() {
-      Navigator.push(
-        context, 
-        new MaterialPageRoute(builder: (context) => new LocalNotifyPage())
-      );
+      Navigator.push(context,
+          new MaterialPageRoute(builder: (context) => new LocalNotifyPage()));
     });
   }
 
   void _onOtherAPITap() {
     setState(() {
-      Navigator.push(
-        context,
-        new MaterialPageRoute(builder: (context) => new OtherApiPage())
-      );
+      Navigator.push(context,
+          new MaterialPageRoute(builder: (context) => new OtherApiPage()));
     });
   }
 
-  
   Future<void> initPlatformState() async {
     String sdkVersion;
-    
+
     try {
       sdkVersion = await MobpushPlugin.getSDKVersion();
     } on PlatformException {
@@ -177,35 +168,31 @@ class _MainAppState extends State<MainApp> {
     // 写入剪切板
     Clipboard.setData(ClipboardData(text: _registrationId));
     // 验证是否写入成功
-    Clipboard.getData(Clipboard.kTextPlain).then( (data) {
-      String text = data.text;
+    Clipboard.getData(Clipboard.kTextPlain).then((data) {
+      String? text = data?.text;
       print('------>#### copyed registrationId: $text');
       if (text == _registrationId) {
         showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text("恭喜🎉"),
-              content: Container(
-                margin: EdgeInsets.only(top: 10, bottom: 30),
-                child: Text(
-                  '复制成功！'
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("恭喜🎉"),
+                content: Container(
+                  margin: EdgeInsets.only(top: 10, bottom: 30),
+                  child: Text('复制成功！'),
                 ),
-              ),
-              actions: <Widget>[
-                new FlatButton(
-                  child: new Text("OK"),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                )
-              ],
-            );
-          }
-        );
+                actions: <Widget>[
+                  new TextButton(
+                    child: new Text("OK"),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
+              );
+            });
       }
     });
-
   }
 
   @override
@@ -300,7 +287,7 @@ class _MainAppState extends State<MainApp> {
                     'SDK Version: $_sdkVersion\nRegistrationId: $_registrationId',
                     style: TextStyle(fontSize: 12),
                   ),
-                  RaisedButton(
+                  ElevatedButton(
                     child: Text('复制'),
                     onPressed: _onCopyButtonClicked,
                   ),

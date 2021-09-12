@@ -25,7 +25,7 @@ class MobPushNotifyMessage {
    * 副标题
    */
   String subTitle;
-  
+
   /*
    * 消息时间戳
    */
@@ -83,22 +83,22 @@ class MobPushNotifyMessage {
    */
   bool light;
 
-  MobPushNotifyMessage({
-      this.title,
-      this.content,
-      this.messageId,
-      this.timestamp,
-      this.style,
-      this.channel,
-      this.voice,
-      this.shake,
-      this.extrasMap,
-      this.inboxStyleContent,
-      this.styleContent,
-      this.light,
-      this.badge,
-      this.sound,
-      this.subTitle});
+  MobPushNotifyMessage(
+      {required this.title,
+      required this.content,
+      required this.messageId,
+      required this.timestamp,
+      required this.style,
+      required this.channel,
+      required this.voice,
+      required this.shake,
+      required this.extrasMap,
+      required this.inboxStyleContent,
+      required this.styleContent,
+      required this.light,
+      required this.badge,
+      required this.sound,
+      required this.subTitle});
 
   // MobPushNotifyMessage(this.title, this.content, this.timestamp, this.badge, this.sound, this.subTitle);
 
