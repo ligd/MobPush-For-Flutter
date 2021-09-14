@@ -2,6 +2,8 @@ package com.mob.mobpush_plugin;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.mob.mobpush_plugin.req.SimulateRequest;
 import com.mob.pushsdk.MobPush;
 import com.mob.pushsdk.MobPushCallback;
@@ -13,6 +15,7 @@ import com.mob.tools.utils.Hashon;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -31,7 +34,7 @@ public class MobpushReceiverPlugin implements EventChannel.StreamHandler {
     public static MobPushReceiver getMobPushReceiver(){
         return mobPushReceiver;
     }
-
+    EventChannel channel;
     /**
      * Plugin registration.
      */
@@ -89,4 +92,16 @@ public class MobpushReceiverPlugin implements EventChannel.StreamHandler {
     public void onCancel(Object o) {
 
     }
+
+//    @Override
+//    public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+//        channel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), "mobpush_receiver");
+//        channel.setStreamHandler(this);
+//
+//    }
+//
+//    @Override
+//    public void onDetachedFromEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+//        channel.setStreamHandler(null);
+//    }
 }

@@ -2,6 +2,8 @@ package com.mob.mobpush_plugin;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.mob.MobSDK;
 import com.mob.OperationCallback;
 import com.mob.mobpush_plugin.req.SimulateRequest;
@@ -18,16 +20,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.plugin.common.EventChannel;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 /**
  * MobpushPlugin
  */
-public class MobpushPlugin implements MethodCallHandler {
+public class MobpushPlugin implements FlutterPlugin,MethodCallHandler {
     private static Hashon hashon = new Hashon();
     private static MobPushReceiver mobPushReceiver;
     private static ArrayList<Result> setAliasCallback = new ArrayList<>();
@@ -38,18 +41,8 @@ public class MobpushPlugin implements MethodCallHandler {
     private static ArrayList<Result> deleteTagsCallback = new ArrayList<>();
     private static ArrayList<Result> cleanTagsCallback = new ArrayList<>();
 
-    /**
-     * Plugin registration.
-     */
-    public static void registerWith(Registrar registrar) {
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), "mob.com/mobpush_plugin");
-        channel.setMethodCallHandler(new MobpushPlugin());
-
-        MobpushReceiverPlugin.registerWith(registrar);
-
-        createMobPushReceiver();
-        MobPush.addPushReceiver(mobPushReceiver);
-    }
+    private MethodChannel methodChannel;
+    private EventChannel eventChannel;
 
     @Override
     public void onMethodCall(MethodCall call, final MethodChannel.Result result) {
@@ -262,5 +255,23 @@ public class MobpushPlugin implements MethodCallHandler {
                 }
             }
         };
+    }
+
+    @Override
+    public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+        methodChannel = new MethodChannel(flutterPluginBinding.getBinaryMessenger(), "mob.com/mobpush_plugin");
+        methodChannel.setMethodCallHandler(this);
+        createMobPushReceiver();
+        MobPush.addPushReceiver(mobPushReceiver);
+
+        MobpushReceiverPlugin receiverPlugig=new MobpushReceiverPlugin();
+        eventChannel = new EventChannel(flutterPluginBinding.getBinaryMessenger(), "mobpush_receiver");
+        eventChannel.setStreamHandler(receiverPlugig);
+    }
+
+    @Override
+    public void onDetachedFromEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
+        methodChannel.setMethodCallHandler(null);
+        eventChannel.setStreamHandler(null);
     }
 }
